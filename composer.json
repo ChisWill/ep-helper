@@ -1,0 +1,28 @@
+{
+    "name": "chiswill/ep-helper",
+    "description": "Helper",
+    "type": "library",
+    "license": "MIT",
+    "require": {
+        "php": ">=7.4",
+        "ext-curl": "*",
+        "ext-json": "*",
+        "ext-mbstring": "*"
+    },
+    "autoload": {
+        "files": [
+            "src/functions.php"
+        ],
+        "psr-4": {
+            "Ep\\Helper\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Ep\\Tests\\": "tests"
+        }
+    },
+    "config": {
+        "sort-packages": true
+    }
+}
