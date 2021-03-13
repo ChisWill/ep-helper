@@ -52,8 +52,8 @@ class Arr
      * 判断数组是否以数字为键
      * ps. 包括空数组
      *
-     * @param  array   $array       待检查数组
-     * @param  bool $consecutive 检查键是否从0开始
+     * @param  array $array       待检查数组
+     * @param  bool  $consecutive 检查键是否从0开始
      * 
      * @return bool
      */
@@ -167,7 +167,7 @@ class Arr
      * 
      * @param  array $args 要合并的数组
      * 
-     * @return array       合并后的数组
+     * @return array
      */
     public static function merge(...$args): array
     {
@@ -197,7 +197,7 @@ class Arr
      * 
      * @param  array  $array 待转换数组
      * 
-     * @return string        XML
+     * @return string
      */
     public static function toXml(array $array): string
     {
@@ -216,9 +216,9 @@ class Arr
     /**
      * XML 转数组
      * 
-     * @param  string $xml 待转换 XML 字符
+     * @param  string $xml 待转换的 XML 字符
      * 
-     * @return array       数组
+     * @return array
      */
     public static function fromXml(string $xml): array
     {

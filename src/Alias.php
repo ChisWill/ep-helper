@@ -51,7 +51,7 @@ class Alias
      * 
      * @param  string $alias 别名
      * 
-     * @return string        路径
+     * @return string
      * @throws InvalidArgumentException
      */
     public static function get(string $alias): string

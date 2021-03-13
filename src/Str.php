@@ -82,7 +82,7 @@ class Str
     }
 
     /**
-     * 生成标准签名
+     * 根据参数及秘钥生成签名
      * 
      * @param  array  参数
      * @param  string 秘钥
