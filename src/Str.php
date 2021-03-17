@@ -9,14 +9,13 @@ class Str
     /**
      * 移除非字母数字的字符，并转为大驼峰命名形式
      * 
-     * @param  string $input     待转换字符
-     * @param  string $separator 分隔符
+     * @param  string $input 待转换字符
      * 
      * @return string
      */
-    public static function toPascalCase(string $input, string $separator = '_'): string
+    public static function toPascalCase(string $input): string
     {
-        return str_replace(' ', '', ucwords(implode(' ', explode($separator, preg_replace('/[^\pL\pN]+/u', ' ', $input)))));
+        return str_replace(' ', '', ucwords(preg_replace('/[^\pL\pN]+/u', ' ', $input)));
     }
 
     /**
