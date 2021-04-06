@@ -140,7 +140,6 @@ class Curl
 
         $handle = new CurlHandle($params, true);
 
-
         try {
             $handle->execMulti();
 
@@ -171,7 +170,6 @@ class Curl
 
         $handle = new CurlHandle($params, true);
 
-
         try {
             $handle->execMulti();
 
@@ -200,12 +198,12 @@ class Curl
         }
         if (isset($list)) {
             foreach ($list as $k => $v) {
-                $url = $multiUrl ? Arr::getValue($urls, $k, '') : $urls;
+                $url = $multiUrl ? ($urls[$k] ?? '') : $urls;
                 if (!$url) {
                     break;
                 }
-                $row = $multiData ? Arr::getValue($data, $k, []) : $data;
-                $opt = $multiOptions ? Arr::getValue($options, $k, []) : $options;
+                $row = $multiData ? ($data[$k] ?? []) : $data;
+                $opt = $multiOptions ? ($options[$k] ?? []) : $options;
                 $params[$k] = call_user_func($callback, $opt, $url, $row);
             }
         } else {
@@ -238,8 +236,8 @@ final class CurlHandle
     private function initCurl(array $options = []): void
     {
         $this->ch = curl_init();
-        $format = Arr::remove($options, 'format', 'json');
-        $format = ['json' => 'json', 'xml' => 'xml'][$format] ?? 'json';
+
+        $format = ['json' => 'json', 'xml' => 'xml'][Arr::remove($options, 'format', 'json')] ?? 'json';
         $headers = ['Accept:application/' . $format];
         $headers = array_merge($headers, (array) Arr::remove($options, 'header', []));
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);

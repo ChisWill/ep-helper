@@ -7,45 +7,17 @@ namespace Ep\Helper;
 class Arr
 {
     /**
-     * Usage examples,
+     * 从数组中获取一组键的值
      * 
-     * ```php
-     * $user = [
-     *     'id' => 1,
-     *     'address' => [
-     *         'street' => 'home'
-     *     ]
-     * ];
-     * $street = \Ep\Helper\Arr::getValue($user, 'address.street', 'defaultValue');
-     * // $street is 'home'
-     * ```
-     *
-     * @param  array      $array   待操作数组
-     * @param  int|string $key     键名
-     * @param  mixed      $default 默认值
+     * @param  array $array   待操作数组
+     * @param  array $keys    一组键
+     * @param  array $default 默认值
      * 
-     * @return mixed
+     * @return array
      */
-    public static function getValue(array $array, $key, $default = null)
+    public static function getValues(array $array, array $keys, array $default = []): array
     {
-        if (array_key_exists($key, $array)) {
-            return $array[$key];
-        }
-
-        if (is_int($key)) {
-            return $default;
-        }
-
-        if (($pos = strrpos($key, '.')) !== false) {
-            $array = static::getValue($array, substr($key, 0, $pos), $default);
-            $key = substr($key, $pos + 1);
-        }
-
-        if (is_array($array)) {
-            return array_key_exists($key, $array) ? $array[$key] : $default;
-        } else {
-            return $default;
-        }
+        return array_intersect_key($array, array_flip($keys)) ?: $default;
     }
 
     /**
@@ -59,7 +31,7 @@ class Arr
      */
     public static function isIndexed(array $array, bool $consecutive = false): bool
     {
-        if (empty($array)) {
+        if ($array === []) {
             return true;
         }
 
@@ -139,14 +111,14 @@ class Arr
      * // ]
      * ```
      *
-     * @param  array       $array 待操作数组
-     * @param  string|int  $from  作为键的字段
-     * @param  string|int  $to    作为值的字段
-     * @param  string|null $group 分组字段
+     * @param  array           $array 待操作数组
+     * @param  string|int      $from  作为键的字段
+     * @param  string|int      $to    作为值的字段
+     * @param  string|int|null $group 分组字段
      * 
      * @return array
      */
-    public static function map(array $array, $from, $to, ?string $group = null): array
+    public static function map(array $array, $from, $to, $group = null): array
     {
         if ($group === null) {
             return array_column($array, $to, $from);
@@ -154,9 +126,9 @@ class Arr
 
         $result = [];
         foreach ($array as $item) {
-            $groupKey = static::getValue($item, $group, '');
-            $key = static::getValue($item, $from, '');
-            $result[$groupKey][$key] = static::getValue($item, $to);
+            $groupKey = $item[$group] ?? '';
+            $key = $item[$from] ?? '';
+            $result[$groupKey][$key] = $item[$to] ?? null;
         }
 
         return $result;

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Ep\Tests;
+namespace Ep\Tests\Support;
 
 use Ep\Helper\Str;
 
 class TestStr
 {
-    public function sign()
+    public function getSign()
     {
         return Str::getSign([
             'a' => 252342,
@@ -16,5 +16,10 @@ class TestStr
             'cd' => false,
             'ef' => true
         ], 'secret-key');
+    }
+
+    public function random()
+    {
+        return Str::random(12, ['A', 'a']);
     }
 }

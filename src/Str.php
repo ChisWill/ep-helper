@@ -52,27 +52,20 @@ class Str
     /**
      * 生成指定位数的随机字符串
      * 
-     * @param  integer $length 长度
-     * @param  string  $type   类型
+     * @param  int    $length 长度
+     * @param  array  $types  类型
+     * @param  string $custom 自定义字符
      * 
      * @return string
      */
-    public static function random(int $length = 16, string $type = ''): string
+    public static function random(int $length = 16, array $types = ['a', 'A', 'd'], string $custom = ''): string
     {
-        $nums = '0123456789';
-        $alps = 'abcdefghjkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ';
-        $chars = '';
-        switch ($type) {
-            case 'd':
-                $chars = $nums;
-                break;
-            case 'a':
-                $chars = $alps;
-                break;
-            default:
-                $chars = $alps .= $nums;
-                break;
-        }
+        $charList = [
+            'a' => 'abcdefghijklmnopqrstuvwxyz',
+            'A' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
+            'd' => '0123456789',
+        ];
+        $chars = implode('', Arr::getValues($charList, $types)) . $custom;
         $len = strlen($chars);
         if ($len < $length) {
             $chars = str_repeat($chars, intval(ceil($length / $len)));

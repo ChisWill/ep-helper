@@ -40,9 +40,9 @@ class File
     /**
      * 递归创建文件夹，并设置权限
      *
-     * @param  string   $path      文件夹位置
-     * @param  integer  $mode      权限
-     * @param  bool     $recursive 是否递归
+     * @param  string $path      文件夹位置
+     * @param  int    $mode      权限
+     * @param  bool   $recursive 是否递归
      * 
      * @return bool
      * @throws RuntimeException
