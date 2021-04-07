@@ -6,7 +6,7 @@ namespace Ep\Tests\Support;
 
 use Ep\Helper\Str;
 
-class TestStr
+class StrService
 {
     public function getSign()
     {

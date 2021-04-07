@@ -7,7 +7,7 @@ namespace Ep\Helper;
 class System
 {
     /**
-     * 获取调用该方法所在方法的调用方法名
+     * 获取所在方法的调用方法名
      * 
      * @param  string $prefix 需要去除的前缀
      * @param  string $suffix 需要去除的后缀
@@ -22,7 +22,7 @@ class System
     }
 
     /**
-     * 获取调用该方法所在方法的调用者
+     * 获取所在方法的调用者
      * 
      * @return string
      */

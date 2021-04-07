@@ -6,7 +6,7 @@ namespace Ep\Tests\Support;
 
 use Ep\Helper\Arr;
 
-class TestArr
+class ArrService
 {
     private array $data = [
         [
@@ -26,6 +26,18 @@ class TestArr
         ]
     ];
 
+    private array $a1 = [
+        'a' => 1,
+        'b' => [1, 2],
+        'c' => []
+    ];
+
+    private array $a2 = [
+        'a' => 12,
+        'b' => [1, 2, 3],
+        'c' => [4]
+    ];
+
     public function getValues()
     {
         $arr = ['a' => 123, 'b' => 'abc'];
@@ -37,5 +49,10 @@ class TestArr
     public function map()
     {
         return Arr::map($this->data, 'id1', 'nam2e', '3age');
+    }
+
+    public function merge()
+    {
+        return Arr::merge($this->a1, $this->a2);
     }
 }

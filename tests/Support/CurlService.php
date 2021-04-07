@@ -6,7 +6,7 @@ namespace Ep\Tests\Support;
 
 use Ep\Helper\Curl;
 
-class TestCurl
+class CurlService
 {
     public function get()
     {

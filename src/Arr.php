@@ -141,7 +141,7 @@ class Arr
      * 
      * @return array
      */
-    public static function merge(...$args): array
+    public static function merge(array ...$args): array
     {
         $result = array_shift($args);
         while (!empty($args)) {

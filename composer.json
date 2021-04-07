@@ -11,6 +11,11 @@
         "ext-mbstring": "*",
         "ext-SimpleXML": "*"
     },
+    "require-dev": {
+        "phpbench/phpbench": "^0.17.1",
+        "phpunit/phpunit": "^9.4",
+        "vimeo/psalm": "^4.5"
+    },
     "autoload": {
         "files": [
             "src/functions.php"

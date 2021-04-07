@@ -60,12 +60,12 @@ class Str
      */
     public static function random(int $length = 16, array $types = ['a', 'A', 'd'], string $custom = ''): string
     {
-        $charList = [
+        $list = [
             'a' => 'abcdefghijklmnopqrstuvwxyz',
             'A' => 'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
             'd' => '0123456789',
         ];
-        $chars = implode('', Arr::getValues($charList, $types)) . $custom;
+        $chars = implode('', Arr::getValues($list, $types)) . $custom;
         $len = strlen($chars);
         if ($len < $length) {
             $chars = str_repeat($chars, intval(ceil($length / $len)));
