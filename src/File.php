@@ -62,13 +62,13 @@ class File
             }
         } catch (RuntimeException $e) {
             if (!is_dir($path)) {
-                throw new RuntimeException("Failed to create directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+                throw new RuntimeException("Failed to create directory \"$path\": " . $e->getMessage(), (int) $e->getCode(), $e);
             }
         }
         try {
             return chmod($path, $mode);
         } catch (RuntimeException $e) {
-            throw new RuntimeException("Failed to change permissions for directory \"$path\": " . $e->getMessage(), $e->getCode(), $e);
+            throw new RuntimeException("Failed to change permissions for directory \"$path\": " . $e->getMessage(), (int) $e->getCode(), $e);
         }
     }
 

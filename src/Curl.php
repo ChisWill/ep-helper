@@ -217,8 +217,15 @@ class Curl
 
 final class CurlHandle
 {
+    /**
+     * @var resource $ch
+     */
     public $ch;
+    /**
+     * @var resource $mch
+     */
     public $mch;
+
     private array $handles = [];
 
     //-------------------------------------------------
