@@ -21,6 +21,6 @@ $a3 = $arr->merge();
 $c1 = $curl->get();
 $u1 = $url->addParams();
 
-test(
+tt(
     $a3
 );
