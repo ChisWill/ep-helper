@@ -32,9 +32,9 @@ function t(...$args): void
             print_r($value);
             echo PHP_EOL;
         } else {
-            echo '<xmp>';
+            echo '<pre>';
             print_r($value);
-            echo '</xmp>';
+            echo '</pre>';
         }
     }
 }
