@@ -6,18 +6,28 @@ function t(...$args): void
     if (!$isCli && !in_array('Content-type:text/html;charset=utf-8', headers_list())) {
         header('Content-type:text/html;charset=utf-8');
     }
-    foreach ($args as $value) {
-        switch ($value) {
-            case $value === null:
-                $value = '"null"';
+    $filter = function (&$value) use (&$filter) {
+        switch (gettype($value)) {
+            case 'NULL':
+                $value = 'null';
                 break;
-            case $value === false:
-                $value = '"false"';
+            case 'boolean':
+                if ($value === true) {
+                    $value = 'true';
+                } else {
+                    $value = 'false';
+                }
                 break;
-            case $value === true:
-                $value = '"true"';
+            case 'string':
+                $value = "'{$value}'";
+                break;
+            case 'array':
+                array_walk($value, $filter);
                 break;
         }
+    };
+    foreach ($args as $value) {
+        $filter($value);
         if ($isCli) {
             print_r($value);
             echo PHP_EOL;
