@@ -36,16 +36,16 @@ class Curl
             $data = '';
         }
 
-        $handle = new CurlHandle($options);
+        $handler = new CurlHandler($options);
 
-        curl_setopt($handle->ch, CURLOPT_URL, $url);
-        curl_setopt($handle->ch, CURLOPT_CUSTOMREQUEST, 'GET');
-        curl_setopt($handle->ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($handler->ch, CURLOPT_URL, $url);
+        curl_setopt($handler->ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        curl_setopt($handler->ch, CURLOPT_POSTFIELDS, $data);
 
         try {
-            return $handle->exec();
+            return $handler->exec();
         } finally {
-            $handle->close();
+            $handler->close();
         }
     }
 
@@ -60,16 +60,16 @@ class Curl
      */
     public static function post(string $url, $data = [], array $options = []): ?string
     {
-        $handle = new CurlHandle($options);
+        $handler = new CurlHandler($options);
 
-        curl_setopt($handle->ch, CURLOPT_URL, $url);
-        curl_setopt($handle->ch, CURLOPT_CUSTOMREQUEST, 'POST');
-        curl_setopt($handle->ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($handler->ch, CURLOPT_URL, $url);
+        curl_setopt($handler->ch, CURLOPT_CUSTOMREQUEST, 'POST');
+        curl_setopt($handler->ch, CURLOPT_POSTFIELDS, $data);
 
         try {
-            return $handle->exec();
+            return $handler->exec();
         } finally {
-            $handle->close();
+            $handler->close();
         }
     }
 
@@ -84,16 +84,16 @@ class Curl
      */
     public static function put(string $url, $data = [], array $options = []): ?string
     {
-        $handle = new CurlHandle($options);
+        $handler = new CurlHandler($options);
 
-        curl_setopt($handle->ch, CURLOPT_URL, $url);
-        curl_setopt($handle->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-        curl_setopt($handle->ch, CURLOPT_POSTFIELDS, $data);
+        curl_setopt($handler->ch, CURLOPT_URL, $url);
+        curl_setopt($handler->ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        curl_setopt($handler->ch, CURLOPT_POSTFIELDS, $data);
 
         try {
-            return $handle->exec();
+            return $handler->exec();
         } finally {
-            $handle->close();
+            $handler->close();
         }
     }
 
@@ -107,15 +107,15 @@ class Curl
      */
     public static function delete(string $url, array $options = []): ?string
     {
-        $handle = new CurlHandle($options);
+        $handler = new CurlHandler($options);
 
-        curl_setopt($handle->ch, CURLOPT_URL, $url);
-        curl_setopt($handle->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        curl_setopt($handler->ch, CURLOPT_URL, $url);
+        curl_setopt($handler->ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 
         try {
-            return $handle->exec();
+            return $handler->exec();
         } finally {
-            $handle->close();
+            $handler->close();
         }
     }
 
@@ -138,14 +138,14 @@ class Curl
             return $option;
         });
 
-        $handle = new CurlHandle($params, true);
+        $handler = new CurlHandler($params, true);
 
         try {
-            $handle->execMulti();
+            $handler->execMulti();
 
-            return $handle->getResults();
+            return $handler->getResults();
         } finally {
-            $handle->closeMulti();
+            $handler->closeMulti();
         }
     }
 
@@ -157,7 +157,7 @@ class Curl
      * @param  array        $options  二维数组时，表示使用多个选项
      * @param  int          $batch    当设置值大于1时，且以上参数都为单值时，则以同样配置发起批量请求
      * 
-     * @return mixed
+     * @return array
      */
     public static function getMulti($urls, $data = '', array $options = [], int $batch = 1): array
     {
@@ -168,14 +168,14 @@ class Curl
             return $option;
         });
 
-        $handle = new CurlHandle($params, true);
+        $handler = new CurlHandler($params, true);
 
         try {
-            $handle->execMulti();
+            $handler->execMulti();
 
-            return $handle->getResults();
+            return $handler->getResults();
         } finally {
-            $handle->closeMulti();
+            $handler->closeMulti();
         }
     }
 
@@ -215,7 +215,7 @@ class Curl
     }
 }
 
-final class CurlHandle
+final class CurlHandler
 {
     /**
      * @var resource $ch
@@ -226,7 +226,7 @@ final class CurlHandle
      */
     public $mch;
 
-    private array $handles = [];
+    private array $handlers = [];
 
     //-------------------------------------------------
     //                以下为标准 Curl 方法
@@ -285,9 +285,9 @@ final class CurlHandle
         $this->mch = curl_multi_init();
 
         for ($i = 0; $i < count($params); $i++) {
-            $handle = new CurlHandle($params[$i]);
-            curl_multi_add_handle($this->mch, $handle->ch);
-            $this->handles[] = $handle;
+            $handler = new CurlHandler($params[$i]);
+            curl_multi_add_handle($this->mch, $handler->ch);
+            $this->handlers[] = $handler;
         }
     }
 
@@ -301,27 +301,27 @@ final class CurlHandle
         $active = false;
         do {
             $mrc = curl_multi_exec($this->mch, $active);
-        } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+        } while ($mrc === CURLM_CALL_MULTI_PERFORM);
 
         while ($active && $mrc == CURLM_OK) {
-            if (curl_multi_select($this->mch) != -1) {
+            if (curl_multi_select($this->mch) !== -1) {
                 usleep(50);
             }
             do {
                 $mrc = curl_multi_exec($this->mch, $active);
-            } while ($mrc == CURLM_CALL_MULTI_PERFORM);
+            } while ($mrc === CURLM_CALL_MULTI_PERFORM);
         }
     }
 
     public function getResults(): array
     {
         $results = [];
-        foreach ($this->handles as $k => $handle) {
-            if (curl_error($handle->ch) == '') {
-                $results[$k] = curl_multi_getcontent($handle->ch);
+        foreach ($this->handlers as $k => $handler) {
+            if (curl_error($handler->ch) === '') {
+                $results[$k] = curl_multi_getcontent($handler->ch);
             }
-            curl_multi_remove_handle($this->mch, $handle->ch);
-            $handle->close();
+            curl_multi_remove_handle($this->mch, $handler->ch);
+            $handler->close();
         }
         return $results;
     }
