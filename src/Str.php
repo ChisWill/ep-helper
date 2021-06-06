@@ -14,16 +14,13 @@ class Str
      * @param  bool   $strict 是否严格
      * @return string
      */
-    public static function trimSuffix(string $input, string $suffix, bool $strict = true): string
+    public static function rtrim(string $input, string $suffix, bool $strict = true): string
     {
-        $pos = strrpos($input, $suffix);
         if ($strict === true) {
-            $last = $input[strlen($suffix) + $pos] ?? null;
-            if ($last !== null) {
-                return $input;
-            }
+            return basename($input, $suffix);
+        } else {
+            return substr($input, 0, strrpos($input, $suffix));
         }
-        return substr($input, 0, $pos);
     }
 
     /**
