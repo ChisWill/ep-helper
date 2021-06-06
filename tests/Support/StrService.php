@@ -23,8 +23,8 @@ class StrService
         return Str::random(12, ['A', 'a']);
     }
 
-    public function trimSuffix()
+    public function rtrim()
     {
-        return Str::trimSuffix('doAction', 'Act', false);
+        return Str::rtrim('abc/doAction', 'bc/doAction');
     }
 }

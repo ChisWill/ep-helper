@@ -16,11 +16,14 @@ class Str
      */
     public static function rtrim(string $input, string $suffix, bool $strict = true): string
     {
+        $pos = strrpos($input, $suffix);
         if ($strict === true) {
-            return basename($input, $suffix);
-        } else {
-            return substr($input, 0, strrpos($input, $suffix));
+            $last = $input[strlen($suffix) + $pos] ?? null;
+            if ($last !== null) {
+                return $input;
+            }
         }
+        return substr($input, 0, strrpos($input, $suffix));
     }
 
     /**

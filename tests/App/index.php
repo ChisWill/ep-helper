@@ -15,7 +15,7 @@ $curl = new CurlService();
 $url = new UrlService();
 
 $s1 = $str->random();
-$s2 = $str->trimSuffix();
+$s2 = $str->rtrim();
 $a1 = $arr->getValues();
 $a2 = $arr->map();
 $a3 = $arr->merge();
