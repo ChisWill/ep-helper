@@ -16,6 +16,8 @@ $url = new UrlService();
 
 $s1 = $str->random();
 $s2 = $str->rtrim();
+$s3 = $str->toPascalCase();
+$s4 = $str->camelToId();
 $a1 = $arr->getValues();
 $a2 = $arr->map();
 $a3 = $arr->merge();
@@ -23,5 +25,6 @@ $c1 = $curl->get();
 $u1 = $url->addParams();
 
 tt(
-    $s2
+    $s3,
+    $s4,
 );

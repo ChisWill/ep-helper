@@ -27,4 +27,19 @@ class StrService
     {
         return Str::rtrim('abc/doAction', 'bc/doAction');
     }
+
+    public function toPascalCase()
+    {
+        $input = 'ab/c-d-e/fgh';
+        return Str::toPascalCase($input);
+    }
+
+    public function camelToId()
+    {
+        $input1 = 'Admin/BackEndCCC/TeIDCommand';
+        $r1 = Str::camelToId($input1, '-', true);
+        $input2 = $input1;
+        $r2 = Str::camelToId($input2, '-', false);
+        return [$r1, $r2];
+    }
 }
