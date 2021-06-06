@@ -7,6 +7,26 @@ namespace Ep\Helper;
 class Str
 {
     /**
+     * 默认为去除字符串后缀，非严格模式下去除指定字符最后一次出现后的所有内容
+     * 
+     * @param  string $input  输入字符
+     * @param  string $suffix 后缀
+     * @param  bool   $strict 是否严格
+     * @return string
+     */
+    public static function trimSuffix(string $input, string $suffix, bool $strict = true): string
+    {
+        $pos = strrpos($input, $suffix);
+        if ($strict === true) {
+            $last = $input[strlen($suffix) + $pos] ?? null;
+            if ($last !== null) {
+                return $input;
+            }
+        }
+        return substr($input, 0, $pos);
+    }
+
+    /**
      * 移除非字母数字的字符，并转为大驼峰命名形式
      * 
      * @param  string $input 待转换字符
@@ -23,6 +43,7 @@ class Str
      * 
      * @param  string $input     待转换字符
      * @param  string $separator 分隔符
+     * @param  bool   $strict    是否严格
      * 
      * @return string
      */
@@ -34,9 +55,9 @@ class Str
     /**
      * 长文本截取后缩略显示
      * 
-     * @param  string $text   原文本
-     * @param  int    $length 显示长度
-     * @param  string $suffix 省略后缀
+     * @param  string $text   输入的文本
+     * @param  int    $length 要显示的长度
+     * @param  string $suffix 截断后的替代字符
      * 
      * @return string
      */
@@ -76,8 +97,9 @@ class Str
     /**
      * 根据参数及秘钥生成签名
      * 
-     * @param  array  参数
-     * @param  string 秘钥
+     * @param  array  $params 参数
+     * @param  string $secret 秘钥
+     * @param  string $algo   加密方式
      * 
      * @return string
      */

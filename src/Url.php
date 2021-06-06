@@ -9,8 +9,8 @@ class Url
     /**
      * 根据已有地址，增加额外参数，如果已存在则覆盖
      *
-     * @param  string $url    基础网址
-     * @param  array  $params URL参数
+     * @param  string $url
+     * @param  array  $params
      * 
      * @return string
      */
