@@ -39,7 +39,7 @@ class Str
     }
 
     /**
-     * 将驼峰命名的形式转为指定分隔符的小写字母连接形式，非字母数字的字符都会转为分隔符
+     * 将驼峰命名的形式转为指定分隔符的小写字母连接形式
      * - 严格模式下，每个大写字母都会被分割
      * - 非严格模式下，连续的大写字母将作为整体进行分割
      * 
@@ -49,9 +49,20 @@ class Str
      * 
      * @return string
      */
-    public static function camelToId(string $input, string $separator = '_', bool $strict = false): string
+    public static function camelToId(string $input, string $separator = '_',  bool $strict = false): string
     {
-        return mb_strtolower(trim(preg_replace('/[^\pL\pN]+/u', $separator, preg_replace($strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/', addslashes($separator) . '\0', $input)), $separator));
+        return mb_strtolower(trim(
+            preg_replace_callback(
+                '/[^\pL\pN]' . '\\' . $separator . '/u',
+                static fn ($v) => trim($v[0], $separator),
+                preg_replace(
+                    $strict ? '/[A-Z]/' : '/(?<![A-Z])[A-Z]/',
+                    addslashes($separator) . '\0',
+                    $input
+                )
+            ),
+            $separator
+        ));
     }
 
     /**

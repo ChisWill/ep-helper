@@ -36,7 +36,7 @@ class StrService
 
     public function camelToId()
     {
-        $input1 = 'Admin/BackEndCCC/TeIDCommand';
+        $input1 = 'Admin12$Back3End4CCC5#TT6e7ID8Command9/10SAY';
         $r1 = Str::camelToId($input1, '-', true);
         $input2 = $input1;
         $r2 = Str::camelToId($input2, '-', false);
