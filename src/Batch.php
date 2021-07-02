@@ -6,10 +6,7 @@ namespace Ep\Helper;
 
 class Batch
 {
-    /**
-     * @return mixed
-     */
-    public static function reduce(callable $producer, callable ...$callbacks)
+    public static function reduce(callable $producer, callable ...$callbacks): array
     {
         $result = [];
         while (true) {
