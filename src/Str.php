@@ -122,10 +122,10 @@ class Str
     public static function getSign(array $params, string $secret, string $algo = 'sha256'): string
     {
         ksort($params);
-        $arr = [];
+        $pieces = [];
         foreach ($params as $key => $value) {
-            $arr[] = $key . '=' . $value;
+            $pieces[] = $key . '=' . $value;
         }
-        return hash_hmac($algo, implode('&', $arr), $secret);
+        return hash_hmac($algo, implode('&', $pieces), $secret);
     }
 }
