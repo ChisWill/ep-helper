@@ -9,16 +9,11 @@ class System
     /**
      * 获取所在方法的调用方法名
      * 
-     * @param  string $prefix 需要去除的前缀
-     * @param  string $suffix 需要去除的后缀
-     * 
      * @return string
      */
-    public static function getCallerMethod(string $prefix = '', string $suffix = ''): string
+    public static function getCallerMethod(): string
     {
-        $method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2]['function'] ?? '';
-        preg_match("/^{$prefix}(\w+){$suffix}$/", $method, $match);
-        return $match[1] ?? '';
+        return debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3)[2]['function'] ?? '';
     }
 
     /**
