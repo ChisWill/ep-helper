@@ -23,6 +23,15 @@ class StrService
         return Str::random(12, ['A', 'a']);
     }
 
+    public function ltrim()
+    {
+        return [
+            Str::ltrim('getAction', 'get'),
+            Str::ltrim('abc/doAction', 'c/do'),
+            Str::ltrim('abc/doAction', 'c/do', false),
+        ];
+    }
+
     public function rtrim()
     {
         return Str::rtrim('abc/doAction', 'bc/doAction');

@@ -7,11 +7,33 @@ namespace Ep\Helper;
 class Str
 {
     /**
+     * 默认为去除字符串前缀，非严格模式下去除指定字符第一次出现前的所有内容
+     * 
+     * @param  string $input  指定字符串
+     * @param  string $prefix 前缀
+     * @param  bool   $strict 是否严格
+     * 
+     * @return string
+     */
+    public static function ltrim(string $input, string $prefix, bool $strict = true): string
+    {
+        $pos = strpos($input, $prefix);
+        if ($pos === false) {
+            return $input;
+        }
+        if ($strict === true && $pos !== 0) {
+            return $input;
+        }
+        return substr($input, strlen($prefix) + $pos);
+    }
+
+    /**
      * 默认为去除字符串后缀，非严格模式下去除指定字符最后一次出现后的所有内容
      * 
-     * @param  string $input  输入字符
+     * @param  string $input  指定字符串
      * @param  string $suffix 后缀
      * @param  bool   $strict 是否严格
+     * 
      * @return string
      */
     public static function rtrim(string $input, string $suffix, bool $strict = true): string
@@ -20,11 +42,8 @@ class Str
         if ($pos === false) {
             return $input;
         }
-        if ($strict === true) {
-            $last = $input[strlen($suffix) + $pos] ?? null;
-            if ($last !== null) {
-                return $input;
-            }
+        if ($strict === true && isset($input[strlen($suffix) + $pos])) {
+            return $input;
         }
         return substr($input, 0, $pos);
     }
