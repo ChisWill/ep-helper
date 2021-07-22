@@ -4,12 +4,14 @@
     "type": "library",
     "license": "MIT",
     "prefer-stable": true,
+    "suggest": {
+        "ext-SimpleXML": "Allows to use Arr::fromXml()"
+    },
     "require": {
         "php": ">=7.4",
         "ext-curl": "*",
         "ext-json": "*",
-        "ext-mbstring": "*",
-        "ext-SimpleXML": "*"
+        "ext-mbstring": "*"
     },
     "require-dev": {
         "phpbench/phpbench": "^0.17.1",

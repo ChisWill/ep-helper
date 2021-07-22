@@ -14,17 +14,21 @@ $arr = new ArrService();
 $curl = new CurlService();
 $url = new UrlService();
 
-$s1 = $str->random();
-$s2 = $str->rtrim();
-$s3 = $str->toPascalCase();
-$s4 = $str->camelToId();
-$a1 = $arr->getValues();
-$a2 = $arr->map();
-$a3 = $arr->merge();
-$c1 = $curl->get();
-$u1 = $url->addParams();
+$array = [
+    // [$str, 'random'],
+    [$str, 'ltrim'],
+    // [$str, 'rtrim'],
+    // [$str, 'toPascalCase'],
+    // [$str, 'camelToId'],
+    // [$arr, 'getValues'],
+    // [$arr, 'map'],
+    // [$arr, 'merge'],
+    // [$curl, 'get'],
+    // [$url, 'addParams'],
+];
 
-tt(
-    $s3,
-    $s4,
-);
+$result = array_map(function ($callback) {
+    return call_user_func($callback);
+}, $array);
+
+tt($result);
