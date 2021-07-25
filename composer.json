@@ -1,8 +1,9 @@
 {
     "name": "chiswill/ep-helper",
-    "description": "Standard Helper",
+    "description": "Base Helper",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "suggest": {
         "ext-SimpleXML": "Allows to use Arr::fromXml()"
