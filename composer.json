@@ -1,8 +1,9 @@
 {
     "name": "chiswill/ep-helper",
-    "description": "Standard Helper",
+    "description": "Base Helper",
     "type": "library",
     "license": "MIT",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "require": {
         "php": ">=7.4",
