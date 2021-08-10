@@ -1,6 +1,6 @@
 {
     "name": "chiswill/ep-helper",
-    "description": "Base Helper",
+    "description": "Ep Helper",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
