@@ -4,14 +4,29 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class Number
+class Math
 {
     /**
+     * 单位转换
+     * 
+     * Usage:
+     * 
+     * ```php
+     * Math::convertUnit(3333, ['B', 'KB', 'MB'], 1024); // 3.25KB
+     * ```
+     * 
+     * @param int|float $number
+     */
+    public static function convertUnit($number, array $units, int $base = 10, int $precision = 2): string
+    {
+        if ($number == 0) {
+            return 0 . ($units[0] ?? '');
+        }
+        return round($number / pow($base, ($i = floor(log(abs($number), $base)))), $precision) . ($units[$i] ?? '');
+    }
+
+    /**
      * 判断是否是质数
-     * 
-     * @param  int $number
-     * 
-     * @return bool
      */
     public static function isPrime(int $number): bool
     {

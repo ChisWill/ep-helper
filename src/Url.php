@@ -16,12 +16,15 @@ class Url
      */
     public static function addParams(string $url, array $params = []): string
     {
-        $urlInfo = parse_url($url);
+        $info = parse_url($url);
+
         $queryParams = [];
-        if (isset($urlInfo['query'])) {
-            parse_str($urlInfo['query'], $queryParams);
+        if (isset($info['query'])) {
+            parse_str($info['query'], $queryParams);
         }
+
         $params += $queryParams;
+
         return ($queryParams ? substr($url, 0, strpos($url, '?')) : $url) . ($params ? '?' : '') . http_build_query($params);
     }
 

@@ -50,16 +50,6 @@ class Arr
     /**
      * 删除数组一项元素并返回，如果不存在则返回给定的默认值
      *
-     * Usage examples,
-     *
-     * ```php
-     * // $array = ['type' => 'A', 'options' => [1, 2]];
-     * // working with array
-     * $type = \Ep\Helper\Arr::remove($array, 'type');
-     * // $array content
-     * // $array = ['options' => [1, 2]];
-     * ```
-     *
      * @param  array  $array   待操作数组
      * @param  string $key     键名
      * @param  mixed  $default 默认值
@@ -71,7 +61,6 @@ class Arr
         if (array_key_exists($key, $array)) {
             $value = $array[$key];
             unset($array[$key]);
-
             return $value;
         }
 
@@ -81,7 +70,7 @@ class Arr
     /**
      * 构建一个键值对数组
      *
-     * Usage examples,
+     * Usage:
      *
      * ```php
      * $array = [
@@ -90,7 +79,7 @@ class Arr
      *     ['id' => '3', 'name' => 'c', 'class' => 'y'],
      * ];
      *
-     * $result = \Ep\Helper\Arr::map($array, 'id', 'name');
+     * $result = Arr::map($array, 'id', 'name');
      * // the result is:
      * // [
      * //     '1' => 'a',
@@ -98,7 +87,7 @@ class Arr
      * //     '3' => 'c',
      * // ]
      *
-     * $result = \Ep\Helper\Arr::map($array, 'id', 'name', 'class');
+     * $result = Arr::map($array, 'id', 'name', 'class');
      * // the result is:
      * // [
      * //     'x' => [
