@@ -1,13 +1,10 @@
 {
     "name": "chiswill/ep-helper",
-    "description": "Base Helper",
+    "description": "Ep Helper",
     "type": "library",
     "license": "MIT",
     "minimum-stability": "stable",
     "prefer-stable": true,
-    "suggest": {
-        "ext-SimpleXML": "Allows to use Arr::fromXml()"
-    },
     "require": {
         "php": ">=7.4",
         "ext-curl": "*",
@@ -18,6 +15,9 @@
         "phpbench/phpbench": "^0.17.1",
         "phpunit/phpunit": "^9.4",
         "vimeo/psalm": "^4.5"
+    },
+    "suggest": {
+        "ext-SimpleXML": "Allows to use Arr::fromXml()"
     },
     "autoload": {
         "files": [

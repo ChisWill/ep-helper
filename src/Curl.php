@@ -7,11 +7,9 @@ namespace Ep\Helper;
 use Closure;
 
 /**
- * RESTful Api 助手类，缩写了3个常用参数
- *
  * [options]:
  * -format: 返回数据类型，可选范围：json|xml，默认json
- * -timeout: 执行最大时间，可输入小数，默认为10秒
+ * -timeout: 执行最大时间，可输入小数，默认为 5 秒
  * -header: 设置头信息参数
  * 
  * ps.其他 curl 的参数，通过 $options 参数直接按键值对方式传入即可
@@ -249,7 +247,7 @@ final class CurlHandler
         $headers = array_merge($headers, (array) Arr::remove($options, 'header', []));
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
 
-        $timeout = Arr::remove($options, 'timeout', 10);
+        $timeout = Arr::remove($options, 'timeout', 5);
         if ($timeout >= 1) {
             curl_setopt($this->ch, CURLOPT_TIMEOUT, $timeout);
         } else {
