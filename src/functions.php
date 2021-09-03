@@ -3,10 +3,11 @@
 function t(...$args): void
 {
     $isCli = PHP_SAPI === 'cli';
-    if (!$isCli && !in_array('Content-type:text/html;charset=utf-8', headers_list())) {
-        header('Content-type:text/html;charset=utf-8');
+    if (!$isCli && !array_filter(headers_list(), fn ($value): bool => strpos(strtolower($value), 'content-type') === 0)) {
+        header('Content-Type:text/html;charset=utf-8');
     }
-    $filter = function (&$value) use (&$filter) {
+
+    $filter = function (&$value) use (&$filter): void {
         switch (gettype($value)) {
             case 'NULL':
                 $value = 'null';
@@ -26,12 +27,16 @@ function t(...$args): void
                 break;
         }
     };
-    foreach ($args as $value) {
-        $filter($value);
-        if ($isCli) {
+
+    if ($isCli) {
+        foreach ($args as $value) {
+            $filter($value);
             print_r($value);
             echo PHP_EOL;
-        } else {
+        }
+    } else {
+        foreach ($args as $value) {
+            $filter($value);
             echo '<pre>';
             print_r($value);
             echo '</pre>';
