@@ -167,9 +167,9 @@ class Arr
         $xml = '<xml>';
         foreach ($array as $key => $val) {
             if (is_numeric($val)) {
-                $xml .= '<' . $key . '>' . $val . '</' . $key . '>';
+                $xml .= sprintf('<%s>%s</%s>', $key, $val, $key);
             } else {
-                $xml .= '<' . $key . '><![CDATA[' . $val . ']]></' . $key . '>';
+                $xml .= sprintf('<%s><![CDATA[%s]]></%s>', $key, $val, $key);
             }
         }
         $xml .= '</xml>';

@@ -56,18 +56,21 @@ class ArrService
         return Arr::merge($this->a1, $this->a2);
     }
 
+    public function toXml()
+    {
+        $data = [
+            'name' => 'zhagnsan',
+            'age' => 13,
+            'email' => ''
+        ];
+
+        return Arr::toXml($data);
+    }
+
     public function fromXml()
     {
         $xml = <<<XML
-<xml>
-    <SuiteId><![CDATA[ww4asffe99e54c0f4c]]></SuiteId>
-    <AuthCorpId><![CDATA[wxf8b4f85f3a794e77]]></AuthCorpId>
-    <InfoType><![CDATA[change_contact]]></InfoType>
-    <TimeStamp>1403610513</TimeStamp>
-    <ChangeType><![CDATA[delete_user]]></ChangeType>
-    <UserID><![CDATA[zhangsan]]></UserID>
-    <OpenUserID><![CDATA[]]></OpenUserID>
-</xml>
+<xml><name><![CDATA[zhagnsan]]></name><age>13</age><email><![CDATA[]]></email></xml>
 XML;
         return Arr::fromXml($xml);
     }

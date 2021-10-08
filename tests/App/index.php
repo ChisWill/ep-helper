@@ -28,6 +28,7 @@ $array = [
     // [$curl, 'get'],
     // [$url, 'addParams'],
     // [$math, 'convertUnit'],
+    [$arr, 'toXml'],
     [$arr, 'fromXml']
 ];
 
