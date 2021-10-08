@@ -27,11 +27,12 @@ $array = [
     // [$arr, 'merge'],
     // [$curl, 'get'],
     // [$url, 'addParams'],
-    [$math, 'convertUnit']
+    // [$math, 'convertUnit'],
+    [$arr, 'fromXml']
 ];
 
 $result = array_map(function ($callback) {
     return call_user_func($callback);
 }, $array);
 
-tt($result);
+print_r($result);

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
+use SimpleXMLElement;
+
 class Arr
 {
     /**
@@ -183,6 +185,20 @@ class Arr
      */
     public static function fromXml(string $xml): array
     {
-        return json_decode(json_encode(simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA)), true);
+        $element = @simplexml_load_string($xml, SimpleXMLElement::class, LIBXML_NOCDATA);
+        if ($element === false) {
+            return [];
+        }
+        return self::getElementValue($element);
+    }
+
+    private static function getElementValue(SimpleXMLElement $element): array
+    {
+        $result = [];
+        foreach ($element as $key => $value) {
+            /** @var SimpleXMLElement $value */
+            $result[$key] = $value->count() === 0 ? $value->__toString() : self::getElementValue($value);
+        }
+        return $result;
     }
 }
