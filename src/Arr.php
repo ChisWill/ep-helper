@@ -195,8 +195,8 @@ class Arr
     private static function getElementValue(SimpleXMLElement $element): array
     {
         $result = [];
+        /** @var iterable<string,SimpleXMLElement> $element */
         foreach ($element as $key => $value) {
-            /** @var SimpleXMLElement $value */
             $result[$key] = $value->count() === 0 ? $value->__toString() : self::getElementValue($value);
         }
         return $result;
