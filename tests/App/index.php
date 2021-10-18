@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Ep\Tests\Support\ArrService;
 use Ep\Tests\Support\CurlService;
+use Ep\Tests\Support\DateService;
 use Ep\Tests\Support\MathService;
 use Ep\Tests\Support\StrService;
 use Ep\Tests\Support\UrlService;
@@ -15,6 +16,7 @@ $arr = new ArrService();
 $curl = new CurlService();
 $url = new UrlService();
 $math = new MathService();
+$date = new DateService();
 
 $array = [
     // [$str, 'random'],
@@ -25,11 +27,15 @@ $array = [
     // [$arr, 'getValues'],
     // [$arr, 'map'],
     // [$arr, 'merge'],
+    // [$date, 'fromUnix'],
+    [$curl, 'custom'],
     // [$curl, 'get'],
+    // [$curl, 'post'],
+    // [$curl, 'getMulti'],
     // [$url, 'addParams'],
     // [$math, 'convertUnit'],
-    [$arr, 'toXml'],
-    [$arr, 'fromXml']
+    // [$arr, 'toXml'],
+    // [$arr, 'fromXml']
 ];
 
 $result = array_map(function ($callback) {

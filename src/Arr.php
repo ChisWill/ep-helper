@@ -6,7 +6,7 @@ namespace Ep\Helper;
 
 use SimpleXMLElement;
 
-class Arr
+final class Arr
 {
     /**
      * 从数组中获取一组键的值

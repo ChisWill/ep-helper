@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class Str
+final class Str
 {
     /**
      * 默认为去除字符串前缀，非严格模式下去除指定字符第一次出现前的所有内容
      * 
      * @param  string $input  指定字符串
      * @param  string $prefix 前缀
-     * @param  bool   $strict 是否严格
+     * @param  bool   $strict 严格模式
      * 
      * @return string
      */
@@ -32,7 +32,7 @@ class Str
      * 
      * @param  string $input  指定字符串
      * @param  string $suffix 后缀
-     * @param  bool   $strict 是否严格
+     * @param  bool   $strict 严格模式
      * 
      * @return string
      */
@@ -67,7 +67,7 @@ class Str
      * 
      * @param  string $input     待转换字符
      * @param  string $separator 分隔符
-     * @param  bool   $strict    是否严格
+     * @param  bool   $strict    严格模式
      * 
      * @return string
      */

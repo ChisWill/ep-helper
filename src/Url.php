@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class Url
+final class Url
 {
     /**
      * 根据已有地址，增加额外参数，如果已存在则覆盖

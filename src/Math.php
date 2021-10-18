@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class Math
+final class Math
 {
     /**
      * 单位转换

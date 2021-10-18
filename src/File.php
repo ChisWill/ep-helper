@@ -6,7 +6,7 @@ namespace Ep\Helper;
 
 use RuntimeException;
 
-class File
+final class File
 {
     /**
      * 获取指定目录下的所有文件夹（不递归获取）

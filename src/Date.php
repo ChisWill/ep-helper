@@ -7,7 +7,7 @@ namespace Ep\Helper;
 use DateTime;
 use DateTimeZone;
 
-class Date
+final class Date
 {
     /**
      * 获得标准格式化时间

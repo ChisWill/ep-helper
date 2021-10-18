@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class System
+final class System
 {
     /**
      * 获取所在方法的调用方法名

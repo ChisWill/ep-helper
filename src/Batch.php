@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-class Batch
+final class Batch
 {
     public static function reduce(callable $producer, callable ...$callbacks): array
     {
@@ -15,7 +15,7 @@ class Batch
                 break;
             }
             foreach ($callbacks as $callback) {
-                $data = $callback($data);
+                $data = call_user_func($callback, $data);
             }
             $result[] = $data;
         }

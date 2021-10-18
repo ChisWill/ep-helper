@@ -44,7 +44,9 @@ class TestCurl extends TestCase
      */
     public function testSingleGet($url, $data, $expect)
     {
-        $result = Curl::get($url, $data);
+        $result = Curl::get($url, [
+            CURLOPT_POSTFIELDS => $data
+        ]);
         $this->assertSame($expect, json_decode($result, true));
     }
 
