@@ -35,6 +35,9 @@ final class Curl
     {
     }
 
+    /**
+     * 创建一个 Curl 实例
+     */
     public static function create(array $options = []): Curl
     {
         $curl = new Curl();
