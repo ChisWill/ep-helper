@@ -37,6 +37,10 @@ final class Curl
 
     /**
      * 创建一个 Curl 实例
+     * 
+     * @param array $options curl选项
+     * 
+     * @return Curl
      */
     public static function create(array $options = []): Curl
     {
