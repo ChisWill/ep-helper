@@ -40,9 +40,9 @@ final class Curl
      * 
      * @param array $options curl选项
      * 
-     * @return Curl
+     * @return self
      */
-    public static function create(array $options = []): Curl
+    public static function create(array $options = []): self
     {
         $curl = new Curl();
         $curl->initSingle($options);
@@ -83,7 +83,7 @@ final class Curl
             ->exec();
     }
 
-    private static function createMulti(array $multiOptions = []): Curl
+    private static function createMulti(array $multiOptions = []): self
     {
         $curl = new Curl();
         $curl->initMultiple($multiOptions);
@@ -161,12 +161,26 @@ final class Curl
         curl_setopt_array($this->ch, $options);
     }
 
+    /**
+     * 设置请求地址
+     * 
+     * @param  string $url
+     * 
+     * @return self
+     */
     public function setUrl(string $url): self
     {
         curl_setopt($this->ch, CURLOPT_URL, $url);
         return $this;
     }
 
+    /**
+     * 设置请求方法
+     * 
+     * @param  string $method
+     * 
+     * @return self
+     */
     public function setMethod(string $method): self
     {
         curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
@@ -174,6 +188,8 @@ final class Curl
     }
 
     /**
+     * 设置请求体数据
+     * 
      * @param array|string $data
      */
     public function setData($data): self
@@ -182,6 +198,14 @@ final class Curl
         return $this;
     }
 
+    /**
+     * 设置请求头信息
+     * 
+     * @param  string $key
+     * @param  string $value 
+     * 
+     * @return self
+     */
     public function setHeader(string $key, string $value): self
     {
         $this->headers[] = sprintf('%s: %s', $key, $value);
@@ -191,6 +215,8 @@ final class Curl
     private array $info;
 
     /**
+     * 发起请求
+     *
      * @return string|array|null
      */
     public function exec()
@@ -217,6 +243,9 @@ final class Curl
     }
 
     /**
+     * 获得请求信息
+     * 
+     * @return array
      * @throws LogicException
      */
     public function getInfo(): array
@@ -229,6 +258,9 @@ final class Curl
     }
 
     /**
+     * 获得请求后状态码
+     * 
+     * @return int
      * @throws LogicException
      */
     public function getHttpCode(): int
@@ -255,7 +287,6 @@ final class Curl
     {
         curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
     }
-
 
     private function getMimeType(string $type): string
     {
