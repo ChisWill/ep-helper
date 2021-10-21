@@ -6,11 +6,17 @@ namespace Ep\Helper;
 
 final class Batch
 {
+    /**
+     * @param  callable   $producer
+     * @param  callable[] $callbacks
+     * 
+     * @return array
+     */
     public static function reduce(callable $producer, callable ...$callbacks): array
     {
         $result = [];
         while (true) {
-            $data = $producer();
+            $data = call_user_func($producer);
             if (!$data) {
                 break;
             }

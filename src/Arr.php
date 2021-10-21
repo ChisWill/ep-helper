@@ -9,24 +9,83 @@ use SimpleXMLElement;
 final class Arr
 {
     /**
-     * 从数组中获取一组键的值
+     * Usage examples,
      * 
-     * @param  array $array   待操作数组
-     * @param  array $keys    一组键
-     * @param  array $default 默认值
+     * ```php
+     * $user = [
+     *     'id' => 1,
+     *     'address' => [
+     *         'street' => 'home'
+     *     ],
+     *     '1.0' => [
+     *         '2.0' => 'version'
+     *     ]
+     * ];
+     * $street = Arr::getValue($user, 'address.street', 'defaultValue');
+     * $version = Arr::getValue($user, ['1.0', '2.0'], 'defaultValue');
+     * // $street is 'home', $version is version
+     * ```
+     *
+     * @param  array            $array
+     * @param  array|string|int $key
+     * @param  mixed            $default
+     * 
+     * @return mixed
+     */
+    public static function getValue(array $array, $key, $default = null)
+    {
+        if (is_scalar($key) && array_key_exists($key, $array)) {
+            return $array[$key];
+        }
+
+        if (is_int($key)) {
+            return $default;
+        }
+
+        if (is_string($key)) {
+            if (strpos($key, '.') === false) {
+                return $default;
+            }
+            $key = explode('.', $key);
+        }
+
+        if (!is_array($key)) {
+            return $default;
+        }
+
+        foreach ($key as $k) {
+            if (array_key_exists($k, $array)) {
+                $array = $array[$k];
+            } else {
+                return $default;
+            }
+        }
+        return $array;
+    }
+
+    /**
+     * 从数组中获取一组键的值，如果获取不到，则尝试从 $default 中获取，还获取不到则返回`null`
+     * 
+     * @param  array $array
+     * @param  array $keys
+     * @param  array $default
      * 
      * @return array
      */
     public static function getValues(array $array, array $keys, array $default = []): array
     {
-        return array_intersect_key($array, array_flip($keys)) ?: $default;
+        $flipKeys = array_flip($keys);
+        $values = array_intersect_key($array, $flipKeys);
+        foreach (array_diff_key($flipKeys, $values) as $key => $i) {
+            $values[$key] = $default[$key] ?? null;
+        }
+        return $values;
     }
 
     /**
-     * 判断数组是否以数字为键
-     * ps. 包括空数组
+     * 判断数组是否以数字为键，空数组也视为`true`
      *
-     * @param  array $array       待检查数组
+     * @param  array $array
      * @param  bool  $consecutive 检查键是否从0开始
      * 
      * @return bool
@@ -52,13 +111,13 @@ final class Arr
     /**
      * 删除数组一项元素并返回，如果不存在则返回给定的默认值
      *
-     * @param  array  $array   待操作数组
-     * @param  string $key     键名
-     * @param  mixed  $default 默认值
+     * @param  array      $array
+     * @param  string|int $key
+     * @param  mixed      $default
      * 
      * @return mixed
      */
-    public static function remove(array &$array, string $key, $default = null)
+    public static function remove(array &$array, $key, $default = null)
     {
         if (array_key_exists($key, $array)) {
             $value = $array[$key];
@@ -67,6 +126,26 @@ final class Arr
         }
 
         return $default;
+    }
+
+    /**
+     * 删除数组中指定的键并返回，如果获取不到，则尝试从 $default 中获取，还获取不到则返回`null`
+     * 
+     * @param  array $array
+     * @param  array $keys
+     * @param  array $default
+     * 
+     * @return array
+     */
+    public static function removeKeys(array &$array, array $keys, array $default = []): array
+    {
+        try {
+            return self::getValues($array, $keys, $default);
+        } finally {
+            foreach ($keys as $key) {
+                unset($array[$key]);
+            }
+        }
     }
 
     /**
@@ -102,16 +181,16 @@ final class Arr
      * // ]
      * ```
      *
-     * @param  array           $array 待操作数组
-     * @param  string|int      $from  作为键的字段
-     * @param  string|int      $to    作为值的字段
-     * @param  string|int|null $group 分组字段
+     * @param  iterable        $array
+     * @param  string|int      $from
+     * @param  string|int      $to
+     * @param  string|int|null $group
      * 
      * @return array
      */
-    public static function map(array $array, $from, $to, $group = null): array
+    public static function map(iterable $array, $from, $to, $group = null): array
     {
-        if ($group === null) {
+        if ($group === null && is_array($array)) {
             return array_column($array, $to, $from);
         }
 
@@ -128,15 +207,15 @@ final class Arr
     /**
      * 合并多个数组，相同键的标量将覆盖，相同键的数组将合并
      * 
-     * @param  array $args 要合并的数组
+     * @param  array $arrays
      * 
      * @return array
      */
-    public static function merge(array ...$args): array
+    public static function merge(array ...$arrays): array
     {
-        $result = array_shift($args);
-        while (!empty($args)) {
-            $next = array_shift($args);
+        $result = array_shift($arrays);
+        while (!empty($arrays)) {
+            $next = array_shift($arrays);
             foreach ($next as $k => $v) {
                 if (is_int($k)) {
                     if (isset($result[$k])) {
@@ -145,7 +224,7 @@ final class Arr
                         $result[$k] = $v;
                     }
                 } elseif (is_array($v) && isset($result[$k]) && is_array($result[$k])) {
-                    $result[$k] = static::merge($result[$k], $v);
+                    $result[$k] = self::merge($result[$k], $v);
                 } else {
                     $result[$k] = $v;
                 }
@@ -158,7 +237,7 @@ final class Arr
     /**
      * 数组转 XML
      * 
-     * @param  array  $array 待转换数组
+     * @param  array $array
      * 
      * @return string
      */
@@ -179,7 +258,7 @@ final class Arr
     /**
      * XML 转数组
      * 
-     * @param  string $xml 待转换的 XML 字符
+     * @param  string $xml
      * 
      * @return array
      */

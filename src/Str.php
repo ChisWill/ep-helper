@@ -9,9 +9,9 @@ final class Str
     /**
      * 默认为去除字符串前缀，非严格模式下去除指定字符第一次出现前的所有内容
      * 
-     * @param  string $input  指定字符串
-     * @param  string $prefix 前缀
-     * @param  bool   $strict 严格模式
+     * @param  string $input
+     * @param  string $prefix
+     * @param  bool   $strict
      * 
      * @return string
      */
@@ -30,9 +30,9 @@ final class Str
     /**
      * 默认为去除字符串后缀，非严格模式下去除指定字符最后一次出现后的所有内容
      * 
-     * @param  string $input  指定字符串
-     * @param  string $suffix 后缀
-     * @param  bool   $strict 严格模式
+     * @param  string $input
+     * @param  string $suffix
+     * @param  bool   $strict
      * 
      * @return string
      */
@@ -51,7 +51,7 @@ final class Str
     /**
      * 移除非字母数字的字符，并转为大驼峰命名形式
      * 
-     * @param  string $input 待转换字符
+     * @param  string $input
      * 
      * @return string
      */
@@ -65,9 +65,9 @@ final class Str
      * - 严格模式下，每个大写字母都会被分割
      * - 非严格模式下，连续的大写字母将作为整体进行分割
      * 
-     * @param  string $input     待转换字符
-     * @param  string $separator 分隔符
-     * @param  bool   $strict    严格模式
+     * @param  string $input
+     * @param  string $separator
+     * @param  bool   $strict
      * 
      * @return string
      */
@@ -90,9 +90,9 @@ final class Str
     /**
      * 长文本截取后缩略显示
      * 
-     * @param  string $text   输入的文本
-     * @param  int    $length 要显示的长度
-     * @param  string $suffix 截断后的替代字符
+     * @param  string $text
+     * @param  int    $length
+     * @param  string $suffix
      * 
      * @return string
      */
@@ -108,9 +108,9 @@ final class Str
     /**
      * 生成指定位数的随机字符串
      * 
-     * @param  int    $length 长度
-     * @param  array  $types  类型
-     * @param  string $custom 自定义字符
+     * @param  int    $length
+     * @param  array  $types
+     * @param  string $custom
      * 
      * @return string
      */
@@ -132,9 +132,9 @@ final class Str
     /**
      * 根据参数及秘钥生成签名
      * 
-     * @param  array  $params 参数
-     * @param  string $secret 秘钥
-     * @param  string $algo   加密方式
+     * @param  array  $params
+     * @param  string $secret
+     * @param  string $algo
      * 
      * @return string
      */

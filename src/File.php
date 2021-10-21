@@ -11,7 +11,7 @@ final class File
     /**
      * 获取指定目录下的所有文件夹（不递归获取）
      * 
-     * @param  string $dir 文件路径
+     * @param  string $dir
      * 
      * @return array
      * @throws RuntimeException
@@ -40,9 +40,9 @@ final class File
     /**
      * 递归创建文件夹，并设置权限
      *
-     * @param  string $path      文件夹位置
-     * @param  int    $mode      权限
-     * @param  bool   $recursive 是否递归
+     * @param  string $path
+     * @param  int    $mode
+     * @param  bool   $recursive
      * 
      * @return bool
      * @throws RuntimeException
@@ -75,7 +75,7 @@ final class File
     /**
      * 删除文件夹
      *
-     * @param  string $dir           文件夹位置
+     * @param  string $dir
      * @param  bool   $ignoreSymlink 是否忽略符号连接指向的内容
      *
      * @throws RuntimeException

@@ -4,22 +4,33 @@ declare(strict_types=1);
 
 namespace Ep\Helper;
 
-use Closure;
 use LogicException;
 
 /**
- * [options]:
- * -type: 请求类型，取值：json|xml|html|text, 除此之外将使用原值
- * -accept: 返回数据类型，取值：json|xml|html|text, 默认json, 除此之外将使用原值
- * -timeout: 执行最大时间，可输入小数，默认为 10 秒
- * -header: 设置头信息参数
+ * Curl 请求的 options 除了`curl_setopt()`数外，以下为便捷选项:
+ * - type: 请求类型，取值: json|xml|html|text|form-urlencoded, 除此之外将使用原值
+ * - accept: 返回数据类型，取值: json|xml|html|text, 默认json, 除此之外将使用原值
+ * - timeout: 执行最大时间，可输入小数，默认为 10 秒
+ * - header: 设置头信息参数
+ * - body: 请求体参数
+ * ps. 如果请求体为数组，且不设置 type 为 form-urlencoded, 则默认类型为 form-data
  * 
- * 其他 curl 参数，通过 $options 直接按键值对的方式传入
+ * Multi Curl 使用时，可设置地址和配置，根据两两组合，使用总结如下:
+ * - 相同的地址，相同的配置，使用 batch 参数
+ * - 相同/不同的地址，不同/相同的配置，每个参数项嵌套一层数组
+ * - 当地址和配置都嵌套数组时，数组元素须数量一致
+ * - 当地址和配置其中之一为数组时，表示复用不嵌套数组的那一项的值
  * 
  * @author ChisWill
  */
 final class Curl
 {
+    public const TYPE_JSON = 'json';
+    public const TYPE_XML = 'xml';
+    public const TYPE_HTML = 'html';
+    public const TYPE_TEXT = 'text';
+    public const TYPE_FORM_URLENCODED = 'form-urlencoded';
+
     /**
      * @var resource
      */
@@ -69,17 +80,17 @@ final class Curl
      * POST 请求
      * 
      * @param  string       $url     请求地址
-     * @param  string|array $data    请求体数据
+     * @param  string|array $body    请求体数据
      * @param  array        $options curl选项
      * 
      * @return string|null
      */
-    public static function post(string $url, $data = [], array $options = []): ?string
+    public static function post(string $url, $body = [], array $options = []): ?string
     {
         return self::create($options)
             ->setUrl($url)
             ->setMethod('POST')
-            ->setData($data)
+            ->setBody($body)
             ->exec();
     }
 
@@ -94,45 +105,54 @@ final class Curl
     /**
      * 并发 GET
      *
-     * @param  array|string $urls     一维数组时，表示请求多个地址
-     * @param  array|string $data     二维数组时，表示使用多个请求体数据
-     * @param  array        $options  二维数组时，表示使用多个选项
-     * @param  int          $batch    当设置值大于1时，且以上参数都为单值时，则以同样配置发起请求
+     * @param  array|string $urls    可使用一维数组，表示请求多个地址
+     * @param  array        $options 可使用二维数组，表示使用多个选项
+     * @param  int          $batch   当设置值大于1时，且以上参数都为单组值时，则以同样配置发起请求
      * 
      * @return array
      */
-    public static function getMulti($urls, $data = '', array $options = [], int $batch = 1): array
+    public static function getMulti($urls, array $options = [], int $batch = 1): array
     {
-        $params = self::normalizeMultiple($urls, $data, $options, $batch, static function (array $option, string $url, $data): array {
-            $option[CURLOPT_URL] = $url;
-            $option[CURLOPT_CUSTOMREQUEST] = 'GET';
-            $option[CURLOPT_POSTFIELDS] = $data;
-            return $option;
-        });
-
-        return Curl::createMulti($params)->exec();
+        return Curl::createMulti(
+            self::createMultiOptions($urls, 'GET', null, $options, $batch)
+        )
+            ->exec();
     }
 
     /**
      * 并发 POST
      *
-     * @param  array|string $urls     一维数组时，表示请求多个地址
-     * @param  array        $data     二维数组时，表示使用多个请求参数
-     * @param  array        $options  二维数组时，表示使用多个选项
-     * @param  int          $batch    当设置值大于1时，且以上参数都为单值时，则以同样配置发起请求
+     * @param  array|string $urls    可使用一维数组，表示请求多个地址
+     * @param  array        $body    可使用二维数组，表示使用多个请求参数
+     * @param  array        $options 可使用二维数组，表示使用多个选项
+     * @param  int          $batch   当设置值大于1时，且以上参数都为单组值时，则以同样配置发起请求
      * 
      * @return array
      */
-    public static function postMulti($urls, array $data, array $options = [], int $batch = 1): array
+    public static function postMulti($urls, array $body, array $options = [], int $batch = 1): array
     {
-        $params = self::normalizeMultiple($urls, $data, $options, $batch, static function (array $option, string $url, $data): array {
-            $option[CURLOPT_URL] = $url;
-            $option[CURLOPT_CUSTOMREQUEST] = 'POST';
-            $option[CURLOPT_POSTFIELDS] = $data;
-            return $option;
-        });
+        return Curl::createMulti(
+            self::createMultiOptions($urls, 'POST', $body, $options, $batch)
+        )
+            ->exec();
+    }
 
-        return Curl::createMulti($params)->exec();
+    /**
+     * 自定义的 http 请求
+     *
+     * @param  array  $urls    多个请求地址
+     * @param  string $method  请求方法
+     * @param  array  $body    为空或者与请求地址数量相同的请求体数据
+     * @param  array  $options 为空或与请求地址数量相同的请求选项
+     * 
+     * @return array
+     */
+    public static function httpMulti(array $urls, string $method, array $body = [], array $options = []): array
+    {
+        return Curl::createMulti(
+            self::createMultiOptions($urls, $method, $body, $options, 1)
+        )
+            ->exec();
     }
 
     private array $headers;
@@ -142,12 +162,12 @@ final class Curl
         $this->ch = curl_init();
         $this->headers = (array) Arr::remove($options, 'header', []);
 
-        $accept = Arr::remove($options, 'accept', 'json');
         $type = Arr::remove($options, 'type');
-        $this->setHeader('Accept', $this->getMimeType($accept));
+        $this->setHeader('Accept', $this->getMimeType(Arr::remove($options, 'accept', self::TYPE_JSON)));
         if ($type !== null) {
             $this->setHeader('Content-Type', $this->getContentType($type));
         }
+        $this->setBody(Arr::remove($options, 'body'));
 
         $timeout = Arr::remove($options, 'timeout', 10);
         if ($timeout >= 1) {
@@ -156,10 +176,12 @@ final class Curl
             curl_setopt($this->ch, CURLOPT_TIMEOUT_MS, $timeout * 1000);
         }
 
-        $this->curlSetDefaultOptions();
+        $this->initDefaultOptions();
 
         curl_setopt_array($this->ch, $options);
     }
+
+    private string $url;
 
     /**
      * 设置请求地址
@@ -170,9 +192,11 @@ final class Curl
      */
     public function setUrl(string $url): self
     {
-        curl_setopt($this->ch, CURLOPT_URL, $url);
+        $this->url = $url;
         return $this;
     }
+
+    private string $method = 'GET';
 
     /**
      * 设置请求方法
@@ -183,18 +207,23 @@ final class Curl
      */
     public function setMethod(string $method): self
     {
-        curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $method);
+        $this->method = $method;
         return $this;
     }
 
     /**
+     * @var array|string|null
+     */
+    private $body = null;
+
+    /**
      * 设置请求体数据
      * 
-     * @param array|string $data
+     * @param array|string|null $body
      */
-    public function setData($data): self
+    public function setBody($body): self
     {
-        curl_setopt($this->ch, CURLOPT_POSTFIELDS, $data);
+        $this->body = $body;
         return $this;
     }
 
@@ -208,7 +237,7 @@ final class Curl
      */
     public function setHeader(string $key, string $value): self
     {
-        $this->headers[] = sprintf('%s: %s', $key, $value);
+        $this->headers[strtolower($key)] = $value;
         return $this;
     }
 
@@ -231,7 +260,7 @@ final class Curl
             }
         } else {
             try {
-                $this->curlSetHttpHeader();
+                $this->ready();
 
                 return curl_exec($this->ch) ?: null;
             } finally {
@@ -253,7 +282,6 @@ final class Curl
         if (!isset($this->info)) {
             throw new LogicException('Must be called after Curl::exec().');
         }
-
         return $this->info;
     }
 
@@ -268,11 +296,10 @@ final class Curl
         if (!isset($this->info)) {
             throw new LogicException('Must be called after Curl::exec().');
         }
-
         return $this->info['http_code'];
     }
 
-    private function curlSetDefaultOptions(): void
+    private function initDefaultOptions(): void
     {
         curl_setopt($this->ch, CURLOPT_HEADER, false);
         curl_setopt($this->ch, CURLOPT_RETURNTRANSFER, true);
@@ -283,22 +310,39 @@ final class Curl
         curl_setopt($this->ch, CURLOPT_ENCODING, '');
     }
 
-    private function curlSetHttpHeader(): void
+    private function ready(): self
     {
-        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $this->headers);
+        if (is_array($this->body) && Arr::getValue($this->headers, 'content-type') === $this->getContentType(self::TYPE_FORM_URLENCODED)) {
+            $this->body = http_build_query($this->body);
+        }
+        $headers = [];
+        foreach ($this->headers as $name => $value) {
+            $headers[] = is_string($name) ? sprintf('%s: %s', $name, $value) : $value;
+        }
+
+        curl_setopt($this->ch, CURLOPT_URL, $this->url);
+        curl_setopt($this->ch, CURLOPT_CUSTOMREQUEST, $this->method);
+        curl_setopt($this->ch, CURLOPT_HTTPHEADER, $headers);
+        if ($this->body !== null) {
+            curl_setopt($this->ch, CURLOPT_POSTFIELDS, $this->body);
+        }
+
+        return $this;
     }
 
     private function getMimeType(string $type): string
     {
         switch ($type) {
-            case 'json':
+            case self::TYPE_JSON:
                 return 'application/json';
-            case 'xml':
+            case self::TYPE_XML:
                 return 'application/xml';
-            case 'html':
+            case self::TYPE_HTML:
                 return 'text/html';
-            case 'text':
+            case self::TYPE_TEXT:
                 return 'text/plain';
+            case self::TYPE_FORM_URLENCODED:
+                return 'application/x-www-form-urlencoded';
             default:
                 return $type;
         }
@@ -324,11 +368,27 @@ final class Curl
         $this->mch = curl_multi_init();
 
         foreach ($multiOptions as $options) {
-            $handle = Curl::create($options);
-            $handle->curlSetHttpHeader();
+            $baseOptions = Arr::removeKeys($options, [
+                CURLOPT_URL,
+                CURLOPT_CUSTOMREQUEST,
+                CURLOPT_POSTFIELDS
+            ]);
+            $handle = Curl::create($options)
+                ->setBaseValue($baseOptions)
+                ->ready();
             curl_multi_add_handle($this->mch, $handle->ch);
             $this->handles[] = $handle;
         }
+    }
+
+    private function setBaseValue(array $baseOptions): self
+    {
+        $this->setUrl($baseOptions[CURLOPT_URL]);
+        $this->setMethod($baseOptions[CURLOPT_CUSTOMREQUEST]);
+        if ($baseOptions[CURLOPT_POSTFIELDS] !== null) {
+            $this->setBody($baseOptions[CURLOPT_POSTFIELDS]);
+        }
+        return $this;
     }
 
     private function execMulti(): void
@@ -363,36 +423,53 @@ final class Curl
 
     /**
      * @param array|string $urls
-     * @param array|string $data
+     * @param array|string|null $body
      */
-    private static function normalizeMultiple($urls, $data, array $options, int $batch, Closure $callback): array
+    private static function createMultiOptions($urls, string $method, $body, array $options, int $batch = 1): array
     {
-        $result = [];
-        $multiUrl = is_array($urls);
-        $multiData = $data && is_array($data) && Arr::isIndexed($data);
-        $multiOptions = $options && Arr::isIndexed($options);
-        if ($multiUrl) {
+        $isMultiUrl = is_array($urls);
+        $isMultiBody = $body && is_array($body) && Arr::isIndexed($body, true);
+        $isMultiOption = $options && Arr::isIndexed($options, true);
+        if ($isMultiUrl) {
             $list = &$urls;
-        } elseif ($multiData) {
-            $list = &$data;
-        } elseif ($multiOptions) {
+        } elseif ($isMultiBody) {
+            $list = &$body;
+        } elseif ($isMultiOption) {
             $list = &$options;
         }
+
+        $result = [];
         if (isset($list)) {
             foreach ($list as $k => $v) {
-                $url = $multiUrl ? ($urls[$k] ?? '') : $urls;
+                $url = $isMultiUrl ? ($urls[$k] ?? null) : $urls;
                 if (!$url) {
-                    break;
+                    continue;
                 }
-                $row = $multiData ? ($data[$k] ?? []) : $data;
-                $opt = $multiOptions ? ($options[$k] ?? []) : $options;
-                $result[$k] = call_user_func($callback, $opt, $url, $row);
+                $result[$k] = self::fillBaseOption(
+                    $isMultiOption ? ($options[$k] ?? []) : $options,
+                    $url,
+                    $method,
+                    $isMultiBody ? ($body[$k] ?? []) : $body
+                );
             }
         } else {
             for ($i = 0; $i < $batch; $i++) {
-                $result[$i] = call_user_func($callback, $options, $urls, $data);
+                $result[$i] = self::fillBaseOption($options, $urls, $method, $body);
             }
         }
         return $result;
+    }
+
+    /**
+     * @param mixed $body
+     */
+    private static function fillBaseOption(array $options, string $url, string $method, $body = null): array
+    {
+        $options[CURLOPT_URL] = $url;
+        $options[CURLOPT_CUSTOMREQUEST] = $method;
+        if ($body !== null) {
+            $options[CURLOPT_POSTFIELDS] = $body;
+        }
+        return $options;
     }
 }

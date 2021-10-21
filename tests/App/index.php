@@ -19,16 +19,18 @@ $math = new MathService();
 $date = new DateService();
 
 $array = [
+    [$arr, 'getValue'],
     // [$str, 'random'],
     // [$str, 'ltrim'],
     // [$str, 'rtrim'],
     // [$str, 'toPascalCase'],
     // [$str, 'camelToId'],
     // [$arr, 'getValues'],
+    // [$arr, 'removeKeys'],
     // [$arr, 'map'],
     // [$arr, 'merge'],
     // [$date, 'fromUnix'],
-    [$curl, 'custom'],
+    // [$curl, 'custom'],
     // [$curl, 'get'],
     // [$curl, 'post'],
     // [$curl, 'getMulti'],

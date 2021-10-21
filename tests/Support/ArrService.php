@@ -38,12 +38,45 @@ class ArrService
         'c' => [4]
     ];
 
+    public function getValue()
+    {
+        $user = [
+            'id' => 1,
+            'address' => [
+                'street' => [
+                    'door' => 'home'
+                ]
+            ],
+            '1.0' => [
+                '2.0' => [
+                    '3.0' => 'version'
+                ]
+            ]
+        ];
+        $id = Arr::getValue($user, 'id', 'defaultValue');
+        $street = Arr::getValue($user, 'address.street.door', 'defaultValue');
+        $version = Arr::getValue($user, ['1.0', '2.01', '3.0'], [
+            '2.01' => [
+                '3.0' => 'version'
+            ]
+        ]);
+        return [$id, $street, $version];
+    }
+
     public function getValues()
     {
         $arr = ['a' => 123, 'b' => 'abc'];
-        $keys = ['af', 'c'];
+        $keys = ['a', 'c'];
 
-        return Arr::getValues($arr, $keys, ['lala']);
+        return Arr::getValues($arr, $keys, []);
+    }
+
+    public function removeKeys()
+    {
+        $arr = ['a' => 123, 'b' => 'abc'];
+        $keys = ['a', 'b', 'c'];
+
+        return [Arr::removeKeys($arr, $keys), $arr];
     }
 
     public function map()

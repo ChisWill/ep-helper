@@ -15,7 +15,9 @@ final class Math
      * Math::convertUnit(3333, ['B', 'KB', 'MB'], 1024); // 3.25KB
      * ```
      * 
-     * @param int|float $number
+     * @param  int|float $number
+     * 
+     * @return string
      */
     public static function convertUnit($number, array $units, int $base = 10, int $precision = 2): string
     {
@@ -27,6 +29,10 @@ final class Math
 
     /**
      * 判断是否是质数
+     * 
+     * @param  int $number
+     * 
+     * @return bool
      */
     public static function isPrime(int $number): bool
     {

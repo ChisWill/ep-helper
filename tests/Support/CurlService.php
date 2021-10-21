@@ -25,7 +25,7 @@ class CurlService
     {
         return Curl::get('http://ep.cc/demo/request', [
             CURLOPT_POSTFIELDS => 'a=1',
-            'type' => 'html'
+            'type' => Curl::TYPE_HTML
         ]);
     }
 
@@ -35,7 +35,7 @@ class CurlService
             'age' => 11,
             'name' => 'Mary'
         ]), [
-            'type' => 'json'
+            'type' => Curl::TYPE_JSON
         ]);
 
         $r2 = Curl::post('http://ep.cc/demo/request', [
@@ -52,10 +52,21 @@ class CurlService
 
     public function getMulti()
     {
-        return Curl::getMulti('http://ep.cc/demo/request', json_encode([
+        return Curl::getMulti('http://ep.cc/demo/request?ab=1&xc=abc', [
+            'type' => Curl::TYPE_JSON,
+            'body' => 'age=1',
+            'header' => [
+                'a-t' => 'x'
+            ]
+        ], 3);
+    }
+
+    public function postMulti()
+    {
+        return Curl::postMulti('http://ep.cc/demo/request', [json_encode([
             'a' => 1
-        ]), [
-            'type' => 'json'
+        ])], [
+            'type' => Curl::TYPE_JSON
         ], 3);
     }
 }
