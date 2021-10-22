@@ -9,7 +9,9 @@ use SimpleXMLElement;
 final class Arr
 {
     /**
-     * Usage examples,
+     * 从数组中获取指定键的值，如果不存在则返回给定的默认值
+     * 
+     * Usage:
      * 
      * ```php
      * $user = [
